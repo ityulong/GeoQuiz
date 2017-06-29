@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">GeoQuiz</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="next_question">下一题</string>
+
+    <string name="ufo_question">宇宙中有UFO吗</string>
+    <string name="earth_question">地球是圆的吗</string>
+    <string name="woman_question">女生和男生性格一样吗</string>
+    <string name="dog_question">狗和猫能和平共处吗</string>
+    <string name="weather_question">今天天气好吗</string>
+    <string name="mac_question">mac 是苹果公司的吗</string>
+    <string name="wrong_answer">回到错误</string>
+    <string name="correct_answer">回答正确</string>
+    <string name="next">下一个</string>
+
+</resources>
