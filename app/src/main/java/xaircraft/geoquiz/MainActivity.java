@@ -10,6 +10,7 @@ import android.widget.Toast;
 import xaircraft.geoquiz.modle.TrueFalse;
 
 public class MainActivity extends Activity implements View.OnClickListener {
+    public final static String INDEX_KEY = "index";
 
     private Button btnY;
     private Button btnN;
@@ -35,9 +36,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(INDEX_KEY);
+        }
         initViews();
 
 
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(INDEX_KEY, mCurrentIndex);
     }
 
     private void initViews() {
@@ -73,7 +85,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.btn_previous:
                 mCurrentIndex--;
                 if (mCurrentIndex <= 0)
-                    mCurrentIndex = mQuestions.length;
+                    mCurrentIndex = mQuestions.length - 1;
                 updateCurrentQuestion();
                 break;
         }
