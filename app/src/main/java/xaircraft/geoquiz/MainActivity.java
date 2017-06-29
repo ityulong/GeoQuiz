@@ -14,6 +14,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button btnY;
     private Button btnN;
     private Button btnNext;
+    private Button btnPrev;
     private TextView tvQuestion;
 
 
@@ -34,17 +35,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+
+
+    }
+
+    private void initViews() {
         btnY = (Button) findViewById(R.id.btn_yes);
         btnN = (Button) findViewById(R.id.btn_no);
         btnNext = (Button) findViewById(R.id.btn_next);
         tvQuestion = (TextView) findViewById(R.id.tv_question);
+        btnPrev = (Button) findViewById(R.id.btn_previous);
+
         btnY.setOnClickListener(this);
         btnN.setOnClickListener(this);
         btnNext.setOnClickListener(this);
+        tvQuestion.setOnClickListener(this);
+        btnPrev.setOnClickListener(this);
 
-        mCurrentTrueFalse = mQuestions[mCurrentIndex];
-        tvQuestion.setText(mCurrentTrueFalse.getQuestion());
-
+        updateCurrentQuestion();
     }
 
     @Override
@@ -57,15 +66,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 checkAnswer(true);
                 break;
             case R.id.btn_next:
+            case R.id.tv_question:
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestions.length;
-                mCurrentTrueFalse = mQuestions[mCurrentIndex];
-                tvQuestion.setText(mCurrentTrueFalse.getQuestion());
-                showToast("触发补丁！");
+                updateCurrentQuestion();
+                break;
+            case R.id.btn_previous:
+                mCurrentIndex--;
+                if (mCurrentIndex <= 0)
+                    mCurrentIndex = mQuestions.length;
+                updateCurrentQuestion();
                 break;
         }
     }
 
-    public void checkAnswer(boolean answer){
+    private void updateCurrentQuestion() {
+        mCurrentTrueFalse = mQuestions[mCurrentIndex];
+        tvQuestion.setText(mCurrentTrueFalse.getQuestion());
+    }
+
+    public void checkAnswer(boolean answer) {
         boolean currentAnswer = mCurrentTrueFalse.isTrueQuestion();
         String showStr = currentAnswer == answer ? getString(R.string.correct_answer) : getString(R.string.wrong_answer);
         showToast(showStr);

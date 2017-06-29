@@ -37,12 +37,26 @@
             android:text="@string/no"
             />
     </LinearLayout>
-    <Button
+    <LinearLayout
         android:layout_marginTop="10dp"
-        android:id="@+id/btn_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next_question"
-        />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous_question"
+            />
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_question"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -13,5 +13,6 @@
     <string name="wrong_answer">回到错误</string>
     <string name="correct_answer">回答正确</string>
     <string name="next">下一个</string>
+    <string name="previous_question">上一题</string>
 
 </resources>
