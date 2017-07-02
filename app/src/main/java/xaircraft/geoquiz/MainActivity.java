@@ -1,6 +1,7 @@
 package xaircraft.geoquiz;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,12 +11,16 @@ import android.widget.Toast;
 import xaircraft.geoquiz.modle.TrueFalse;
 
 public class MainActivity extends Activity implements View.OnClickListener {
-    public final static String INDEX_KEY = "index";
+    public final static String QUESTION_INDEX_KEY = "index";
+    public final static String QUESTION_DATA = "cheating";
+
+    public final static int CHEAT_REQUEST_CODE = 1;
 
     private Button btnY;
     private Button btnN;
     private Button btnNext;
     private Button btnPrev;
+    private Button btnCheating;
     private TextView tvQuestion;
 
 
@@ -32,13 +37,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private TrueFalse mCurrentTrueFalse;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState != null) {
-            mCurrentIndex = savedInstanceState.getInt(INDEX_KEY);
+            mCurrentIndex = savedInstanceState.getInt(QUESTION_INDEX_KEY);
+            mQuestions = (TrueFalse[]) savedInstanceState.getParcelableArray(QUESTION_DATA);
         }
         initViews();
 
@@ -49,7 +56,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(INDEX_KEY, mCurrentIndex);
+        outState.putInt(QUESTION_INDEX_KEY, mCurrentIndex);
+        outState.putParcelableArray(QUESTION_DATA, mQuestions);
     }
 
     private void initViews() {
@@ -58,12 +66,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnNext = (Button) findViewById(R.id.btn_next);
         tvQuestion = (TextView) findViewById(R.id.tv_question);
         btnPrev = (Button) findViewById(R.id.btn_previous);
+        btnCheating = (Button) findViewById(R.id.btn_cheating);
 
         btnY.setOnClickListener(this);
         btnN.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         tvQuestion.setOnClickListener(this);
         btnPrev.setOnClickListener(this);
+        btnCheating.setOnClickListener(this);
 
         updateCurrentQuestion();
     }
@@ -84,9 +94,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.btn_previous:
                 mCurrentIndex--;
-                if (mCurrentIndex <= 0)
+                if (mCurrentIndex < 0)
                     mCurrentIndex = mQuestions.length - 1;
                 updateCurrentQuestion();
+                break;
+            case R.id.btn_cheating:
+                Intent i = new Intent(this, CheatActivity.class);
+                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, mCurrentTrueFalse.isTrueQuestion());
+                startActivityForResult(i,CHEAT_REQUEST_CODE);
                 break;
         }
     }
@@ -96,11 +111,28 @@ public class MainActivity extends Activity implements View.OnClickListener {
         tvQuestion.setText(mCurrentTrueFalse.getQuestion());
     }
 
+    @Deprecated
     public void checkAnswer(boolean answer) {
+        if(mCurrentTrueFalse.isCheating()){
+            showToast(getString(R.string.cheating_is_wrong));
+            return;
+        }
+
         boolean currentAnswer = mCurrentTrueFalse.isTrueQuestion();
         String showStr = currentAnswer == answer ? getString(R.string.correct_answer) : getString(R.string.wrong_answer);
         showToast(showStr);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        if (requestCode == CHEAT_REQUEST_CODE && resultCode == RESULT_OK) {
+            boolean isCheating = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOW, false);
+            mCurrentTrueFalse.setCheating(isCheating);
+        }
     }
 
     public void showToast(String msg) {
